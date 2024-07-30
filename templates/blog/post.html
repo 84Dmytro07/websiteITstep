@@ -1,0 +1,63 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<!-- Блог пост -->
+<div class="blog-post">
+    <!-- Заголовок -->
+    <h1>{{ post.title }}</h1>
+    <!-- Автор -->
+    <p class="lead">
+        от <a href="#">{{ post.user.username }}</a>
+    </p>
+    <hr>
+    <!-- Дата/Время -->
+    <p><span class="glyphicon glyphicon-time"></span> Опубликовано {{ post.published_date }}</p>
+    <hr>
+    <!-- Изображения для предпросмотра -->
+    {% if post.image1 %}
+        <img class="img-responsive" src="{{ post.image1.url }}" alt="{{ post.title }}">
+        <hr>
+    {% endif %}
+    {% if post.image2 %}
+        <img class="img-responsive" src="{{ post.image2.url }}" alt="{{ post.title }}">
+        <hr>
+    {% endif %}
+    {% if post.image3 %}
+        <img class="img-responsive" src="{{ post.image3.url }}" alt="{{ post.title }}">
+        <hr>
+    {% endif %}
+    <!-- Содержимое поста -->
+    <p class="lead">{{ post.content }}</p>
+    <hr>
+</div>
+
+<!-- Комментарии к блогу -->
+
+<!-- Форма комментариев -->
+<div class="well">
+    <h4>Оставить комментарий:</h4>
+    <form action="{% url 'post_detail' post.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" name="comment" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+
+<!-- Опубликованные комментарии -->
+<div class="comments">
+    {% for comment in post.comments.all %}
+    <div class="comment">
+        <p class="text-muted">
+            Комментарий от {{ comment.author }} на {{ comment.created_date }}
+        </p>
+        <p>{{ comment.text|linebreaks }}</p>
+    </div>
+    {% empty %}
+    <p>Пока нет комментариев. Вы можете быть первым!</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
